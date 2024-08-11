@@ -9,18 +9,44 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@headlessui/react": "^2.1.2",
+    "@heroicons/react": "^2.1.5",
+    "@hookform/resolvers": "^3.9.0",
+    "@mui/icons-material": "^5.16.1",
+    "@mui/lab": "^5.0.0-alpha.171",
+    "@mui/material": "^5.16.1",
+    "@tanstack/react-query": "^5.50.1",
+    "axios": "^1.7.2",
+    "html2canvas": "^1.4.1",
+    "lodash": "^4.17.21",
+    "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.5"
+    "react-draggable": "^4.4.6",
+    "react-helmet-async": "^2.0.5",
+    "react-hook-form": "^7.52.1",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.2.1",
+    "react-pick-color": "^2.0.0",
+    "react-rnd": "^10.4.11",
+    "uuid": "^10.0.0",
+    "yup": "^1.4.0",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
+    "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.4",
+    "i": "^0.3.7",
+    "npm": "^10.8.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.5"
+    "typescript": "^5"
   }
 }

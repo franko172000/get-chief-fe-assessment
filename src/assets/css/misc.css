@@ -1,0 +1,16 @@
+.guide {
+    position: absolute;
+    background-color: #FFF; /* Semi-transparent red */
+    pointer-events: none; /* Allows mouse events to pass through the guide */
+    display: none; /* Initially hidden */
+}
+.guide-x {
+    height: 100%;
+    width: 1px;
+    top: 0;
+}
+.guide-y {
+    width: 100%;
+    height: 1px;
+    left: 0;
+}
