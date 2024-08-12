@@ -2,9 +2,13 @@
 import {useAppNavigation} from "@/store/navigation";
 import {useEffect, useState} from "react";
 import ButtonCustom from "@/shared/components/form/ButtonCustom";
-import {PlusIcon} from "@heroicons/react/16/solid";
+import {EyeIcon, PencilIcon, PlusIcon, TrashIcon} from "@heroicons/react/16/solid";
 import {useTasks} from "@/store/task_store";
 import CreateTaskModal from "@/app/panel/tasks/(components)/CreateTaskModal";
+import Link from "next/link";
+import {PanelRoutes} from "@/shared/const/routes";
+import {Tooltip} from "@mui/material";
+import {ITask} from "@/types/task";
 
 const people = [
     { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
@@ -12,13 +16,20 @@ const people = [
 ]
 
 const TaskList = () => {
-    const {tasks, getTasks} = useTasks()
+    const {tasks, getTasks, setTask, deleteTask} = useTasks()
     const {setCurrentNav} = useAppNavigation();
     const [showModal, setShowModal] = useState(false)
     useEffect(()=>{
         setCurrentNav('tasks')
         getTasks()
     },[])
+    const showCreateTaskModal = () => {
+        setShowModal(true)
+    }
+
+    const handleDeleteTask = (task: ITask)=> {
+        deleteTask(task)
+    }
     return (
         <div className="w-full px-4 sm:px-6 lg:px-8 bg-white rounded">
             <div className="flex w-full">
@@ -27,7 +38,7 @@ const TaskList = () => {
                         <h1 className="text-base font-semibold leading-6 text-gray-900">Tasks</h1>
                     </div>
                     <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none w-52">
-                        <ButtonCustom size="small" onClick={()=>setShowModal(true)}>
+                        <ButtonCustom size="small" onClick={showCreateTaskModal}>
                             <span className="flex gap-2 w-full justify-center items-center"> <PlusIcon className="h-5" /> Create Task</span>
                         </ButtonCustom>
                     </div>
@@ -73,30 +84,32 @@ const TaskList = () => {
                         {tasks.map((task) => (
                             <tr key={task.id}>
                                 <td className="relative py-4 pr-3 text-sm font-medium text-gray-900">
-                                    {task.title}
-                                    <div className="absolute bottom-0 right-full h-px w-screen bg-gray-100" />
-                                    <div className="absolute bottom-0 left-0 h-px w-screen bg-gray-100" />
+                                    <Link href={`${PanelRoutes.TASKS_PAGE}/${task.id}`}>
+                                        {task.title}
+                                    </Link>
                                 </td>
                                 <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">{task.id}</td>
                                 <td className="hidden px-3 py-4 text-sm text-gray-500 md:table-cell">{task.assigned_date}</td>
                                 <td className="px-3 py-4 text-sm text-gray-500">{task.status}</td>
                                 <td className="relative py-4 pl-3 text-sm font-medium">
-                                    <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                        {task.due_date}
-                                    </a>
+                                    {task.due_date}
                                 </td>
                                 <td className="relative py-4 pl-3 text-sm font-medium">
-                                    <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                        {task.priority}
-                                    </a>
+                                    {task.priority}
                                 </td>
                                 <td className="relative py-4 pl-3 text-sm font-medium">
                                     {task?.owner ? `${task.owner.first_name + ' ' + task.owner.last_name}` : 'unassigned' }
                                 </td>
-                                <td className="relative py-4 pl-3 text-sm font-medium">
-                                    <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                        Edit
-                                    </a>
+                                <td className="relative py-4 pl-3 text-sm font-medium flex gap-2">
+                                    <Tooltip title="View Task">
+                                        <Link href={`${PanelRoutes.TASKS_PAGE}/${task.id}`}>
+                                            <EyeIcon className="w-5 text-green-500" />
+                                        </Link>
+                                    </Tooltip>
+
+                                    <Tooltip title="Delete Task">
+                                        <TrashIcon className="w-5 text-red-500 cursor-pointer" onClick={()=>handleDeleteTask(task)} />
+                                    </Tooltip>
                                 </td>
                             </tr>
                         ))}

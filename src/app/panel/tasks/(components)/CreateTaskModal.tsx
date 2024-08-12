@@ -12,12 +12,15 @@ import SelectField from "@/shared/components/form/SelectField";
 import {useAppUser} from "@/store/user";
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import TextAreaField from "@/shared/components/form/TextAreaField";
 
 interface TaskModalProps extends PropsWithChildren{
     title?: string,
     show?: boolean,
     onClose?: (status: boolean)=>void,
     onTaskCreated?:(task?: ITask)=>void,
+    onTaskUpdated?:(task?: ITask)=>void,
+    task?:ITask,
 }
 
 interface TaskValues {
@@ -35,17 +38,18 @@ const validationSchema = object().shape({
     owner_id: number(),
     priority: string().required(),
 });
-export default function CreateTaskModal({show = false, onClose, onTaskCreated} : TaskModalProps) {
-    const {task, createTask} = useTasks()
+export default function CreateTaskModal({show = false, onClose, onTaskCreated, onTaskUpdated, task} : TaskModalProps) {
+    //const {task} = useTasks()
+    const {createTask, updateTask} = useTasks()
     const {users, getUsers} = useAppUser()
     const [isLoading, setIsLoading] = useState(false);
-    const { control, handleSubmit, formState, reset } = useForm<TaskValues>({
+    const { control, handleSubmit, formState, reset, setValue } = useForm<TaskValues>({
         defaultValues: {
-            title: task.title,
-            description: task.description,
-            due_date: task.due_date,
+            title: task?.title,
+            description: task?.description,
+            due_date: task?.due_date,
             owner_id: task?.owner?.id,
-            priority: task.priority,
+            priority: task?.priority,
         },
         resolver: yupResolver(validationSchema),
     });
@@ -72,17 +76,44 @@ export default function CreateTaskModal({show = false, onClose, onTaskCreated} :
         })
     }
 
+    const handleTaskUpdate = async (data) => {
+        await updateTask({
+            task: {
+                id: task?.id,
+                title: data.title,
+                description: data.description,
+                due_date: data.due_date,
+                owner_id: data.owner_id,
+                priority: data.priority,
+            } as ITask,
+            onSuccess: (task)=>{
+                toast.success('Task created');
+                setIsLoading(false);
+                reset()
+                onTaskUpdated?.(task)
+            },
+            onError: (err)=>{
+                toast.error('Error creating task');
+                setIsLoading(false);
+            }
+        })
+    }
+
     const onSubmit = handleSubmit(async (data, e) => {
         e?.preventDefault();
         setIsLoading(true);
-        await handleTaskSubmit(data);
+        if(task){
+            handleTaskUpdate(data)
+        }else{
+            await handleTaskSubmit(data);
+        }
     });
     useEffect(() => {
         getUsers()
     }, []);
     return(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <AppModal show={show} onClose={onClose} title="Create Task">
+            <AppModal show={show} onClose={onClose} title={task ? 'Edit Task' + task?.title : 'Create Task'}>
                 <div className="w-[550px]">
                     <form onSubmit={onSubmit}>
                         <TextInputField
@@ -90,10 +121,11 @@ export default function CreateTaskModal({show = false, onClose, onTaskCreated} :
                             name="title"
                             label="Title"
                             type="text"
+                            defaultValue={task?.title}
                             control={control}
                             errorMessage={formState.errors["title"]?.message}
                         />
-                        <TextInputField
+                        <TextAreaField
                             placeholder="Enter description"
                             name="description"
                             label="Description"
@@ -153,7 +185,7 @@ export default function CreateTaskModal({show = false, onClose, onTaskCreated} :
                         />
 
                         <div className="w-full mt-12">
-                            <ButtonCustom text="Create Task" isLoading={isLoading}/>
+                            <ButtonCustom text={task ? 'Update Task' : 'Create Task'} isLoading={isLoading}/>
                         </div>
                     </form>
                 </div>

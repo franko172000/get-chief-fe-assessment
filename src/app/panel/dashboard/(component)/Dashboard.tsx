@@ -1,6 +1,4 @@
 import React, {FC, useEffect} from "react";
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import CustomBadge from "@/shared/components/CustomBadge";
 import {useAppNavigation} from "@/store/navigation";
 
 const Dashboard: FC = () => {

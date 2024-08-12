@@ -11,6 +11,11 @@ export class TaskApi {
         return response.data as ITask;
     };
 
+    update = async (task: ITask): Promise<ITask> => {
+        const response = await this.fetcher.put<ITask>(`tasks/${task.id}`, { ...task });
+        return response.data as ITask;
+    };
+
     list = async ():Promise<ITask[]> => {
         const response = await this.fetcher.get<ITask[]>("tasks");
         return response.data as ITask[];
@@ -21,14 +26,18 @@ export class TaskApi {
         return response.data as ITask;
     };
 
-    assign = async ({email}:{email: string}):Promise<ITask> => {
-        this.fetcher.defaults.headers.common["Authorization"] = undefined;
-        const response = await this.fetcher.post<ApiResponseShape<ITask>>("user/resend-verification-email", { email });
-        return response.data.message;
+    assign = async ({ownerId, taskId}:{ownerId: number, taskId: number}):Promise<ITask> => {
+        const response = await this.fetcher.patch<ITask>(`tasks/${taskId}/assign`, { owner_id: ownerId });
+        return response.data as ITask;
     };
 
-    unassign = async ():Promise<IUser | null> => {
-        const response = await this.fetcher.get<ApiResponseShape<IUser>>("user/me");
-        return response.data.data;
+    unaAssign = async (taskId: number):Promise<ITask> => {
+        const response = await this.fetcher.patch<ITask>(`tasks/${taskId}/unassign`);
+        return response.data as ITask ;
+    };
+
+    delete = async (taskId: number):Promise<any> => {
+        const response = await this.fetcher.delete(`tasks/${taskId}`);
+        return response.data;
     };
 }
