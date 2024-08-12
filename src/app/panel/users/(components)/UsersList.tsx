@@ -2,19 +2,25 @@
 import {useAppNavigation} from "@/store/navigation";
 import {useEffect, useState} from "react";
 import ButtonCustom from "@/shared/components/form/ButtonCustom";
-import {PlusIcon} from "@heroicons/react/16/solid";
+import {PlusIcon, TrashIcon} from "@heroicons/react/16/solid";
 import {useTasks} from "@/store/task_store";
 import CreateTaskModal from "@/app/panel/tasks/(components)/CreateTaskModal";
 import {useAppUser} from "@/store/user";
 import CreateUserModal from "@/app/panel/users/(components)/CreateUserModal";
+import {Tooltip} from "@mui/material";
+import {ITask} from "@/types/task";
+import {IUser} from "@/types/user/IUser";
 const UsersList = () => {
-    const {users, getUsers} = useAppUser()
+    const {users, getUsers, deleteUser} = useAppUser()
     const {setCurrentNav} = useAppNavigation();
     const [showModal, setShowModal] = useState(false)
     useEffect(()=>{
         setCurrentNav('users')
         getUsers()
     },[])
+    const handleDeleteUser = (user: IUser)=> {
+        deleteUser({userId: user?.id as number})
+    }
     return (
         <div className="w-full px-4 sm:px-6 lg:px-8 bg-white rounded">
             <div className="flex w-full">
@@ -79,13 +85,16 @@ const UsersList = () => {
                                 </td>
                                 <td className="relative py-4 pl-3 text-sm font-medium">
                                     <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                        {user?.tasks?.length ?? 0}
+                                        {user?.task_count ?? 0}
                                     </a>
                                 </td>
                                 <td className="relative py-4 pl-3 text-sm font-medium">
-                                    <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                        Edit
-                                    </a>
+                                    {users.length > 1 && (
+                                        <Tooltip title="Delete Task">
+                                            <TrashIcon className="w-5 text-red-500 cursor-pointer" onClick={()=>handleDeleteUser(user)} />
+                                        </Tooltip>
+                                    )}
+
                                 </td>
                             </tr>
                         ))}

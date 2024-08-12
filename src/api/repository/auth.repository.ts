@@ -1,7 +1,7 @@
 import {Axios} from "axios";
 
 
-import {attachAuthToken} from "..";
+import {attachAuthToken, attachCallerHeader} from "..";
 import {ILogin} from "@/types/auth_types";
 
 export class AuthApi {
@@ -9,6 +9,7 @@ export class AuthApi {
 
     login = async (email: string, password: string): Promise<ILogin> => {
         this.fetcher.defaults.headers.common["Authorization"] = undefined;
+        attachCallerHeader('login')
         const response = await this.fetcher.post<ILogin>("auth/login", { email, password });
         const data = response.data as ILogin
         attachAuthToken(data.access_token);

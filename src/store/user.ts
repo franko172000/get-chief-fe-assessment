@@ -17,6 +17,7 @@ const userState: UserStateType = {
 type UserAction = {
     getUser: (onSuccess?: ()=> void)=> void;
     create: ({user, onSuccess, onError}:{user: ICreateUser, onSuccess?: (user?: IUser) => void,  onError?: (err?: any)=>void})=> void;
+    deleteUser: ({userId, onSuccess, onError}:{userId: number, onSuccess?: () => void,  onError?: (err?: any)=>void})=> void;
     getUsers: (onSuccess?: ()=> void)=> void;
     setUser: (user: IUser | null)=>void;
     setLoggedIn: (isLoggedIn: boolean)=>void;
@@ -61,6 +62,17 @@ export const useAppUser = create<UserStateType & UserAction>((set, getState) => 
                     users: [...getState().users, newUser]
                 }))
             }
+        }catch (err){
+            onError?.(err)
+        }
+    },
+    deleteUser: async ({userId, onSuccess, onError}) => {
+        try{
+            const response = await appApi.user.delete(userId)
+            onSuccess?.()
+            set(()=> ({
+                users: [...getState().users.filter(user => user.id !== userId)]
+            }))
         }catch (err){
             onError?.(err)
         }

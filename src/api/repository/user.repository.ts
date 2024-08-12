@@ -19,4 +19,9 @@ export class UserApi {
         const response = await this.fetcher.get<IUser[]>("users");
         return response.data as IUser[];
     };
+
+    delete = async (userId):Promise<any> => {
+        const response = await this.fetcher.delete(`users/${userId}`);
+        return response.data;
+    };
 }

@@ -45,11 +45,11 @@ export default function CreateTaskModal({show = false, onClose, onTaskCreated, o
     const [isLoading, setIsLoading] = useState(false);
     const { control, handleSubmit, formState, reset, setValue } = useForm<TaskValues>({
         defaultValues: {
-            title: task?.title,
-            description: task?.description,
-            due_date: task?.due_date,
-            owner_id: task?.owner?.id,
-            priority: task?.priority,
+            title: '',
+            description: '',
+            due_date: '',
+            owner_id: 0,
+            priority: '',
         },
         resolver: yupResolver(validationSchema),
     });
@@ -60,7 +60,7 @@ export default function CreateTaskModal({show = false, onClose, onTaskCreated, o
                 title: data.title,
                 description: data.description,
                 due_date: data.due_date,
-                owner_id: data.owner_id,
+                owner_id: data.owner_id ?? undefined,
                 priority: data.priority,
             } as ITask,
             onSuccess: (task)=>{
@@ -87,13 +87,13 @@ export default function CreateTaskModal({show = false, onClose, onTaskCreated, o
                 priority: data.priority,
             } as ITask,
             onSuccess: (task)=>{
-                toast.success('Task created');
+                toast.success('Task Updated');
                 setIsLoading(false);
                 reset()
                 onTaskUpdated?.(task)
             },
             onError: (err)=>{
-                toast.error('Error creating task');
+                toast.error('Error updating task');
                 setIsLoading(false);
             }
         })
@@ -110,10 +110,15 @@ export default function CreateTaskModal({show = false, onClose, onTaskCreated, o
     });
     useEffect(() => {
         getUsers()
-    }, []);
+        setValue('title', task?.title)
+        setValue('description', task?.description)
+        setValue('due_date', task?.due_date)
+        setValue('owner_id', task?.owner?.id)
+        setValue('priority', task?.priority)
+    }, [task]);
     return(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <AppModal show={show} onClose={onClose} title={task ? 'Edit Task' + task?.title : 'Create Task'}>
+            <AppModal show={show} onClose={onClose} title={task ? 'Edit Task' : 'Create Task'}>
                 <div className="w-[550px]">
                     <form onSubmit={onSubmit}>
                         <TextInputField
@@ -144,14 +149,6 @@ export default function CreateTaskModal({show = false, onClose, onTaskCreated, o
                                 value: `${user.first_name} ${user.last_name}`
                             }))}
                             control={control}
-                        />
-                        <TextInputField
-                            placeholder="Select Team Member"
-                            name="owner_id"
-                            label="Assign Team Member"
-                            type="text"
-                            control={control}
-                            errorMessage={formState.errors["owner_id"]?.message}
                         />
                         <TextInputField
                             placeholder="Select Due Date"

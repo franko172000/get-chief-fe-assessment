@@ -6,7 +6,7 @@ export interface IUser {
     first_name?: boolean,
     last_name?: string,
     created_at?: string,
-    tasks?: ITask[]
+    task_count?: number,
 }
 
 export interface ICreateUser {

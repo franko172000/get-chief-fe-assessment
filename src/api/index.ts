@@ -3,6 +3,7 @@ import axios, {Axios, AxiosInstance} from "axios";
 import {AuthApi} from "@/api/repository/auth.repository";
 import {UserApi} from "@/api/repository/user.repository";
 import {TaskApi} from "@/api/repository/task.repository";
+import {AuthRoutes} from "@/shared/const/routes";
 
 export const axiosInstance: AxiosInstance = axios.create({
     baseURL: 'http://localhost:8000/api/v1/',
@@ -13,16 +14,8 @@ export const attachAuthToken = (token: string, fetcher: Axios = axiosInstance) =
     fetcher.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };
 
-export const attachLangHeader = (lang: string, fetcher: Axios = axiosInstance) => {
-    fetcher.defaults.headers.common["x-custom-lang"] = lang;
-};
-
-export const removeAuthHeader = (fetcher: Axios = axiosInstance) => {
-    fetcher.defaults.headers.common["Authorization"] = undefined;
-};
-
-export const setRequestTokenAuthHeader = (token: string,fetcher: Axios = axiosInstance) => {
-    fetcher.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+export const attachCallerHeader = (page: string, fetcher: Axios = axiosInstance) => {
+    fetcher.defaults.headers.common["x-caller"] = page;
 };
 export interface ApiResponseShape<T> {
     message: string
@@ -48,12 +41,12 @@ axiosInstance.interceptors.response.use(
     },
     (error) => {
         console.log(error)
-        // if (error.response.status === 401) {
-        //     if (localStorage.getItem("accessToken")) {
-        //         localStorage.removeItem("accessToken");
-        //         window.location.href = AuthRoutes.LOGIN_PAGE;
-        //     }
-        // }
+        if (error.response.status === 401) {
+            if (error.config.url !== 'auth/login') {
+                localStorage.removeItem("accessToken");
+                window.location.href = AuthRoutes.LOGIN_PAGE;
+            }
+        }
         return Promise.reject(error);
     }
 

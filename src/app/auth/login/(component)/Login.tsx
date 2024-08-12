@@ -39,7 +39,7 @@ export default function Login () {
         mutationFn: (data: any) => appApi.auth.login(data.email, data.password),
         onSuccess: (data: any) => {
             toast.success("Login successful!");
-            window.location.href = PanelRoutes.DASHBOARD_PAGE
+            window.location.href = PanelRoutes.TASKS_PAGE
         },
         onError: (error: any) => {
             setIsLoading(false);
