@@ -1,7 +1,6 @@
-import {Cog6ToothIcon} from "@heroicons/react/24/outline";
 import LogoutIcon from "@/assets/icons/LogoutIcon";
 import React from "react";
-import {bottomNavs, mainNavs} from "@/data/navigations";
+import {mainNavs} from "@/data/navigations";
 import {classNames} from "@/utils";
 import Link from "next/link";
 

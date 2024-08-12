@@ -1,25 +1,29 @@
 import {Axios} from "axios";
 import {IUser} from "@/types/user/IUser";
 import {ApiResponseShape} from "@/api";
+import {ITask} from "@/types/task";
 
 export class TaskApi {
     constructor(private fetcher: Axios) {}
 
-    create = async ({email, password, companyName, lastName, firstName}:{email: string, password: string, firstName: string, lastName: string, companyName: string}): Promise<IUser> => {
-        this.fetcher.defaults.headers.common["Authorization"] = undefined;
-        const response = await this.fetcher.post<ApiResponseShape<IUser>>("tasks", { email, password, companyName, lastName, firstName });
-        return response.data.data;
+    create = async (task: ITask): Promise<ITask> => {
+        const response = await this.fetcher.post<ApiResponseShape<ITask>>("tasks", { ...task });
+        return response.data as ITask;
     };
 
-    list = async ():Promise<string> => {
-        this.fetcher.defaults.headers.common["Authorization"] = undefined;
-        const response = await this.fetcher.get<ApiResponseShape<string>>("tasks");
-        return response.data.message;
+    list = async ():Promise<ITask[]> => {
+        const response = await this.fetcher.get<ITask[]>("tasks");
+        return response.data as ITask[];
     };
 
-    assign = async ({email}:{email: string}):Promise<string> => {
+    task = async (taskId: number):Promise<ITask> => {
+        const response = await this.fetcher.get<ITask>(`tasks/${taskId}`);
+        return response.data as ITask;
+    };
+
+    assign = async ({email}:{email: string}):Promise<ITask> => {
         this.fetcher.defaults.headers.common["Authorization"] = undefined;
-        const response = await this.fetcher.post<ApiResponseShape<string>>("user/resend-verification-email", { email });
+        const response = await this.fetcher.post<ApiResponseShape<ITask>>("user/resend-verification-email", { email });
         return response.data.message;
     };
 

@@ -11,10 +11,11 @@ import {AxiosError} from "axios";
 import toast from "react-hot-toast";
 import {extractError} from "@/api/utils";
 import {ErrorCode} from "@/shared/const/error-codes";
-import {pendulumApi} from "@/api";
+import {appApi} from "@/api";
 import ButtonCustom from "@/shared/components/form/ButtonCustom";
 import Link from "next/link";
 import {AuthRoutes, PanelRoutes} from "@/shared/const/routes";
+import {ILogin} from "@/types/auth_types";
 
 interface LoginValues {
     email: string;
@@ -34,8 +35,8 @@ export default function Login () {
         resolver: yupResolver(validationSchema),
     });
 
-    const submit = useMutation<{ data: string }, unknown, LoginValues>({
-        mutationFn: (data: any) => pendulumApi.auth.login(data.email, data.password),
+    const submit = useMutation<ILogin, unknown, LoginValues>({
+        mutationFn: (data: any) => appApi.auth.login(data.email, data.password),
         onSuccess: (data: any) => {
             toast.success("Login successful!");
             window.location.href = PanelRoutes.DASHBOARD_PAGE

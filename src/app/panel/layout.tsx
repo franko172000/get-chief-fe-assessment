@@ -14,7 +14,7 @@ import {Bars3Icon, BellIcon, XMarkIcon,} from '@heroicons/react/24/outline'
 import {ChevronDownIcon, MagnifyingGlassIcon} from '@heroicons/react/20/solid'
 import {Box} from "@mui/material";
 import Logo from "@/shared/components/Logo";
-import {attachAuthToken, pendulumApi} from "@/api";
+import {attachAuthToken, appApi} from "@/api";
 import {useAppUser} from "@/store/user";
 import {AuthRoutes} from "@/shared/const/routes";
 import {useRouter} from "next/navigation";
@@ -37,14 +37,14 @@ const PanelLayout: FC<Props> = ({children}) => {
         localStorage.setItem("accessToken", '***');
         userStore.setUser(null);
         userStore.setLoggedIn(false);
-        pendulumApi.auth.logout().catch(err => console.log(err))
+        appApi.auth.logout().catch(err => console.log(err))
         router.push(AuthRoutes.LOGIN_PAGE)
     }
 
     useEffect(()=>{
         const token = localStorage.getItem("accessToken") ?? '';
         attachAuthToken(token)
-        userStore.getUser()
+       // userStore.getUser()
     },[])
     return (
         <Box>

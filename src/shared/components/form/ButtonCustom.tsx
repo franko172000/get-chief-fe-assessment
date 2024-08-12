@@ -17,7 +17,7 @@ const ButtonCustom: FC<ButtonProps> = ({text, color='primary', isLoading=false, 
                 color='primary'
                 variant='contained'
                 size={size}
-                type='submit'
+                type={type}
                 fullWidth
                 disabled={isLoading}
                 {...rest}

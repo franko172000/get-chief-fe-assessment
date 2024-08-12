@@ -2,6 +2,7 @@
 import axios, {Axios, AxiosInstance} from "axios";
 import {AuthApi} from "@/api/repository/auth.repository";
 import {UserApi} from "@/api/repository/user.repository";
+import {TaskApi} from "@/api/repository/task.repository";
 
 export const axiosInstance: AxiosInstance = axios.create({
     baseURL: 'http://localhost:8000/api/v1/',
@@ -32,10 +33,12 @@ export interface ApiResponseShape<T> {
 class Api {
     public auth: AuthApi;
     public user: UserApi;
+    public task: TaskApi;
 
     constructor(axios: Axios) {
         this.auth = new AuthApi(axios);
         this.user = new UserApi(axios);
+        this.task = new TaskApi(axios);
     }
 }
 
@@ -44,6 +47,7 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     (error) => {
+        console.log(error)
         // if (error.response.status === 401) {
         //     if (localStorage.getItem("accessToken")) {
         //         localStorage.removeItem("accessToken");
@@ -52,5 +56,6 @@ axiosInstance.interceptors.response.use(
         // }
         return Promise.reject(error);
     }
+
 );
-export const pendulumApi = new Api(axiosInstance);
+export const appApi = new Api(axiosInstance);
