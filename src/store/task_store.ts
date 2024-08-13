@@ -31,8 +31,7 @@ type TaskAction = {
     assignTask: ({ownerId, onError, onSuccess, taskId}:{ownerId: number, taskId: number, onSuccess?: (data?: ITask) => void, onError?: (err?: any) => void })=> void;
     unAssignTask: ({onError, onSuccess, taskId}:{taskId: number, onSuccess?: (data?: ITask) => void, onError?: (err?: any) => void })=> void;
     getTasks: (onSuccess?: ()=> void)=> void;
-    setTask: (task: ITask | null)=>void;
-    setTasks: (tasks: ITask[])=>void;
+    getUserTasks: ({ownerId, onError, onSuccess}:{ownerId: number, onSuccess?: (data?: ITask[]) => void, onError?: (err?: any) => void })=> void;
     deleteTask: (tasks: ITask, onSuccess?: ()=> void)=>void;
 }
 
@@ -41,6 +40,21 @@ export const useTasks = create<TaskStateType & TaskAction>((set, getState) => ({
     getTasks: async (onSuccess) => {
         try{
             const tasks = await appApi.task.list()
+            if(tasks){
+                onSuccess?.()
+                set(()=> ({
+                    tasks
+                }))
+            }
+        }catch (err){
+            set(()=> ({
+                error: err
+            }))
+        }
+    },
+    getUserTasks: async ({ownerId, onSuccess, onError}) => {
+        try{
+            const tasks = await appApi.task.userTasks(ownerId)
             if(tasks){
                 onSuccess?.()
                 set(()=> ({
@@ -136,11 +150,6 @@ export const useTasks = create<TaskStateType & TaskAction>((set, getState) => ({
                 error: err
             }))
         }
-    },
-    setTask: (task)=> {
-        set(()=> ({
-            task
-        }))
     },
     deleteTask: async (task, onSuccess)=> {
         try{

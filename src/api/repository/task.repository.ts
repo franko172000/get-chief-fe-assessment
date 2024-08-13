@@ -7,7 +7,7 @@ export class TaskApi {
     constructor(private fetcher: Axios) {}
 
     create = async (task: ITask): Promise<ITask> => {
-        const response = await this.fetcher.post<ApiResponseShape<ITask>>("tasks", { ...task });
+        const response = await this.fetcher.post<ITask>("tasks", { ...task });
         return response.data as ITask;
     };
 
@@ -18,6 +18,11 @@ export class TaskApi {
 
     list = async ():Promise<ITask[]> => {
         const response = await this.fetcher.get<ITask[]>("tasks");
+        return response.data as ITask[];
+    };
+
+    userTasks = async (userId: number):Promise<ITask[]> => {
+        const response = await this.fetcher.get<ITask[]>(`tasks/user/${userId}`);
         return response.data as ITask[];
     };
 

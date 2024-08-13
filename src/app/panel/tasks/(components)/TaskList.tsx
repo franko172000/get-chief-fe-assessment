@@ -16,7 +16,7 @@ const people = [
 ]
 
 const TaskList = () => {
-    const {tasks, getTasks, setTask, deleteTask} = useTasks()
+    const {tasks, getTasks, deleteTask} = useTasks()
     const {setCurrentNav} = useAppNavigation();
     const [showModal, setShowModal] = useState(false)
     useEffect(()=>{

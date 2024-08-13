@@ -10,6 +10,8 @@ import CreateUserModal from "@/app/panel/users/(components)/CreateUserModal";
 import {Tooltip} from "@mui/material";
 import {ITask} from "@/types/task";
 import {IUser} from "@/types/user/IUser";
+import Link from "next/link";
+import {PanelRoutes} from "@/shared/const/routes";
 const UsersList = () => {
     const {users, getUsers, deleteUser} = useAppUser()
     const {setCurrentNav} = useAppNavigation();
@@ -84,13 +86,13 @@ const UsersList = () => {
                                     </a>
                                 </td>
                                 <td className="relative py-4 pl-3 text-sm font-medium">
-                                    <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                                    <Link href={`${PanelRoutes.USER_TASKS_PAGE}${user.id}`} className="text-indigo-600 hover:text-indigo-900">
                                         {user?.task_count ?? 0}
-                                    </a>
+                                    </Link>
                                 </td>
                                 <td className="relative py-4 pl-3 text-sm font-medium">
                                     {users.length > 1 && (
-                                        <Tooltip title="Delete Task">
+                                        <Tooltip title="Delete User">
                                             <TrashIcon className="w-5 text-red-500 cursor-pointer" onClick={()=>handleDeleteUser(user)} />
                                         </Tooltip>
                                     )}
